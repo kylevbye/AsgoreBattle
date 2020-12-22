@@ -7,6 +7,7 @@ import games.byekv1.AsgoreBattle;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "Undertale AU: Asgore Genocide Battle";
 		new LwjglApplication(new AsgoreBattle(), config);
 	}
 }

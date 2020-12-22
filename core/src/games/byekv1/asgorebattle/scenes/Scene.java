@@ -60,6 +60,11 @@ public interface Scene extends Disposable {
 	public void draw(Batch batch, float alpha);
 	
 	/**
+	 * Stops all music and all continuous actions from the scene from playing.
+	 */
+	public void stop();
+	
+	/**
 	 * Increments the scene frame counter. Call this in the end of
 	 * <code>processLogic()</code>.
 	 */
