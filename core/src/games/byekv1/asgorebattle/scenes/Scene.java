@@ -70,6 +70,8 @@ public interface Scene extends Disposable {
 	 */
 	public void incrementCounter();
 	
+	public void resize(int width, int height);
+	
 	///
 	///	Force Destructors
 	///

@@ -52,7 +52,7 @@ public class ScreenObject extends Image implements Collidable {
 	///
 	
 	public void centerOrigin() {
-		super.setOrigin(getOriginX()/2.f, getOriginY()/2.f);
+		super.setOrigin(getWidth()/2.f, getHeight()/2.f);
 	}
 	
 	public void initBoundingPolygon() {

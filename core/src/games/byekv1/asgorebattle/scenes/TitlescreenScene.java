@@ -255,10 +255,6 @@ public class TitlescreenScene implements Scene {
 	@Override
 	public void setup() {
 		
-		setCounter(0);
-		setStage(CounterConstants.TITLE);
-		setSelection(CounterConstants.Menu.NONE);
-		
 		//	Set all Assets to invisible
 		titleLabel.setVisible(false);
 		titleInstructionLabel.setVisible(false);
@@ -273,9 +269,13 @@ public class TitlescreenScene implements Scene {
 		instructionFullscreenLabel.setVisible(false);
 		instructionQuitLabel.setVisible(false);
 		instructionLabel2.setVisible(false);
-		instructionDoneLabel.setVisible(true);
+		instructionDoneLabel.setVisible(false);
 		knifeAnimation.setVisible(false);
 		knifeAnimation.resetFrameCount();
+		
+		setCounter(0);
+		setStage(CounterConstants.TITLE);
+		setSelection(CounterConstants.Menu.NONE);
 		
 	}
 
@@ -412,14 +412,14 @@ public class TitlescreenScene implements Scene {
 			instructionDoneLabel.setColor(Color.YELLOW);
 			
 			//	Labels
-			if (!instructionLabel.isVisible()) instructionLabel.setVisible(true);
-			if (!instructionConfirmLabel.isVisible()) instructionConfirmLabel.setVisible(true);
-			if (!instructionCancelLabel.isVisible()) instructionCancelLabel.setVisible(true);
-			if (!instructionFullscreenLabel.isVisible()) instructionFullscreenLabel.setVisible(true);
-			if (!instructionQuitLabel.isVisible()) instructionQuitLabel.setVisible(true);
-			if (!instructionLabel2.isVisible()) instructionLabel2.setVisible(true);
+			instructionLabel.setVisible(true);
+			instructionConfirmLabel.setVisible(true);
+			instructionCancelLabel.setVisible(true);
+			instructionFullscreenLabel.setVisible(true);
+			instructionQuitLabel.setVisible(true);
+			instructionLabel2.setVisible(true);
 			
-			if (!instructionDoneLabel.isVisible()) instructionDoneLabel.setVisible(true);
+			instructionDoneLabel.setVisible(true);
 			
 			break;
 			
@@ -437,6 +437,7 @@ public class TitlescreenScene implements Scene {
 			if (counter == CounterConstants.GameStart.ENDSCENE) {
 				stageChanged();
 				stage = CounterConstants.TITLE;
+				SceneManager.loadScene(SceneManager.SceneConstants.BATTLESTART);
 			}
 			
 			break;
@@ -613,6 +614,11 @@ public class TitlescreenScene implements Scene {
 	@Override
 	public void incrementCounter() { ++counter; }
 	
+	@Override
+	public void resize(int width, int height) {
+		
+	}
+	
 	///
 	///	Title Scene Constants
 	///
@@ -647,7 +653,7 @@ public class TitlescreenScene implements Scene {
 		public final class GameStart {
 			
 			public static final int SLASHSOUND = 1;
-			public static final int ENDSCENE = 300;
+			public static final int ENDSCENE = 150;
 			
 		}
 		

@@ -80,6 +80,11 @@ public class AsgoreBattle extends ApplicationAdapter {
 	}
 	
 	@Override
+	public void resize(int width, int height) {
+		SceneManager.resize(width, height);
+	}
+	
+	@Override
 	public void dispose () {
 		
 		batch.dispose();
