@@ -125,7 +125,7 @@ public class BattleStartScene implements Scene {
 		
 		setCounter(0);
 		
-		soul.setPosition(width/2-soul.getWidth()/2, height/2-((10f/16f)*height)-soul.getHeight()/2);
+		soul.setPosition(width/2-soul.getWidth()/2, height/2-((7f/16f)*height)-soul.getHeight()/2);
 		
 	}
 	
@@ -155,7 +155,7 @@ public class BattleStartScene implements Scene {
 			
 		}
 		
-		if (counter == CounterConstants.END) SceneManager.loadScene(SceneManager.SceneConstants.TITLE);
+		if (counter == CounterConstants.END) SceneManager.loadScene(SceneManager.SceneConstants.BATTLEINTRO);
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		
@@ -188,7 +188,8 @@ public class BattleStartScene implements Scene {
 		
 		Camera stageCam = stage.getCamera();
 		stageCam.viewportWidth = WORLD_WIDTH;
-		stageCam.viewportHeight = WORLD_HEIGHT * height / width;
+		//* height / width
+		stageCam.viewportHeight = WORLD_HEIGHT;
 		stageCam.position.set(stageCam.viewportWidth/2, stageCam.viewportHeight/2, 0f);
 		stageCam.update();
 		

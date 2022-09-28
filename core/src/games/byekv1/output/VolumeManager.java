@@ -9,7 +9,7 @@ package games.byekv1.output;
  */
 public class VolumeManager {
 	
-	public static float volume = 1f;
+	public static float volume = .3f;
 
 	/**
 	 * 

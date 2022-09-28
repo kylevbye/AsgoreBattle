@@ -86,6 +86,7 @@ public class PNGAnimatedMobileScreenObject extends MobileScreenObject {
 	@Override
 	public void draw(Batch batchIn, float parentAlphaIn) {
 		
+		frames.get(frameCount).setColor(getColor());
 		frames.get(frameCount).draw(batchIn, parentAlphaIn);
 		
 	}

@@ -42,11 +42,18 @@ public class Image extends Actor implements Disposable, Drawable {
 	///
 	///	Functions
 	///
+	
+	public float findCenterX() { return getX() + getWidth()/2f; }
+	
+	public float findCenterY() { return getY() + getHeight()/2f; }
+	
 	public void draw(Batch batchIn, float parentAlphaIn) {
 		batchIn.enableBlending();
+		Color oldColor = batchIn.getColor();
 		Color color = getColor();
 		batchIn.setColor(color.r, color.g, color.b, color.a * parentAlphaIn);
 		batchIn.draw(textureRegion, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+		batchIn.setColor(oldColor);
 	}
 	
 	///
