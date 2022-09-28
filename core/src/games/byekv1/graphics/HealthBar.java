@@ -50,6 +50,7 @@ public class HealthBar extends Actor {
 
         if (counter%displayDelay == 0 && displayPoints>healthPoints) {
             --displayPoints;
+            healthDisplayChanged();
         }
 
         ++counter;
@@ -57,6 +58,13 @@ public class HealthBar extends Actor {
 
     public void resetCounter() {
         counter = 0;
+    }
+
+    public void healthDisplayChanged() {
+
+        float topWidth = getWidth()*((float)displayPoints/(float)maxHealthPoints);
+        topRectangle.setWidth(topWidth);
+
     }
     
     ///
@@ -110,4 +118,27 @@ public class HealthBar extends Actor {
         batch.setColor(old);
 		
 	}
+
+    ///
+    /// Constructor
+    ///
+
+    public HealthBar(float xIn, float yIn, float scaleXIn, float scaleYIn, float width, 
+    float height, Color topColor, Color bottomColor) {
+        super();
+        setWidth(width); setHeight(height);
+        setOrigin(0.f, 0.f);
+		setX(xIn); setY(yIn);
+		setScale(scaleXIn, scaleYIn);
+		setRotation(0.f);
+
+        /// Create Top
+        Image topRectangle;
+        settopRectangle(topRectangle);
+
+        /// Create Bottom
+        Image bottomRectangle;
+        setbottomRectangle(bottomRectangle);
+    }
+
 }
