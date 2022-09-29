@@ -9,12 +9,17 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import games.byekv1.asgorebattle.controllers.BattleController;
 import games.byekv1.graphics.BattleGUI;
+import games.byekv1.graphics.HealthBar;
 import games.byekv1.graphics.PNGAnimatedMobileScreenObject;
 import games.byekv1.graphics.graphicloaders.PNGAnimatedMSOLoader;
 import games.byekv1.output.VolumeManager;
@@ -71,6 +76,8 @@ public class BattleScene implements Scene {
 	private BattleController battleController;
 	private PNGAnimatedMobileScreenObject asgoreIdleAnimation;
 	private PNGAnimatedMobileScreenObject knifeSlashAnimation;
+	private Label damageLabel;
+	private HealthBar healthBar;
 	private Music phase1Music;
 
 	///
@@ -99,6 +106,7 @@ public class BattleScene implements Scene {
 	private void setKnifeSlashAnimation(PNGAnimatedMobileScreenObject knifeSlashAnimation) {
 		this.knifeSlashAnimation = knifeSlashAnimation;
 	}
+	private void setHealthBar(HealthBar healthBar) { this.healthBar = healthBar; }
 	public void setPhase1Music(Music phase1Music) { this.phase1Music = phase1Music; }
 	
 	///
@@ -136,6 +144,20 @@ public class BattleScene implements Scene {
 			)
 		);
 
+		//	damageLabel
+		damageLabel = new Label("9999999", new LabelStyle(
+			new BitmapFont(
+				Gdx.files.internal("fonts/undertaleDamage.fnt")
+				), Color.RED)
+			);
+		battleController.setDamageLabel(damageLabel);
+
+		//	healthBar
+		setHealthBar(
+			new HealthBar(0,0, 1, 1, asgoreIdleAnimation.getWidth()*.7f, WORLD_HEIGHT/30*.8f, Color.GREEN, Color.GRAY)
+		);
+		battleController.setHealthBar(healthBar);
+
 		//	Music
 		setPhase1Music(Gdx.audio.newMusic(Gdx.files.internal("music/asgoreBattle.ogg")));
 		phase1Music.setLooping(true);
@@ -144,6 +166,8 @@ public class BattleScene implements Scene {
 		stage.addActor(battleGUI);
 		stage.addActor(asgoreIdleAnimation);
 		stage.addActor(knifeSlashAnimation);
+		stage.addActor(healthBar);
+		stage.addActor(damageLabel);
 
 		//	Final Stage Apply
 		stage.getViewport().apply();
@@ -162,7 +186,7 @@ public class BattleScene implements Scene {
 		//	Scaling
 		battleGUI.setSize(WORLD_WIDTH-WORLD_WIDTH/6, WORLD_HEIGHT/3);
 		battleGUI.setScaling(false);
-		asgoreIdleAnimation.setScale(.73f);
+		asgoreIdleAnimation.setScale(.9f);
 		knifeSlashAnimation.setScale(2f);
 
 		//	Colors
@@ -175,7 +199,18 @@ public class BattleScene implements Scene {
 				WORLD_HEIGHT/2
 			);
 		knifeSlashAnimation.setPosition(WORLD_WIDTH/2-knifeSlashAnimation.getWidth()*knifeSlashAnimation.getScaleX()/2, (WORLD_HEIGHT/2)+knifeSlashAnimation.getHeight()*knifeSlashAnimation.getScaleY()*3);
-		
+
+		//	HealthBar
+		healthBar.setPosition(WORLD_WIDTH/2-healthBar.getWidth()/2, (10.f/16.f)*(WORLD_HEIGHT));
+		healthBar.setMaxHealthPoints(200);
+		healthBar.setHealthPoints(200);
+		healthBar.setdisplayDelay(1);
+		healthBar.setdisplayPoints(200);
+		healthBar.setVisible(false);
+
+		//	Label
+		damageLabel.setVisible(false);
+		damageLabel.setPosition((healthBar.getX()+healthBar.getWidth()/2)-damageLabel.getWidth()/2, healthBar.getY()+(healthBar.getHeight()*8.3f));
 
 		battleGUI.setScaling(true);
 
@@ -192,6 +227,8 @@ public class BattleScene implements Scene {
 		battleGUI.setVisible(false);
 		asgoreIdleAnimation.setVisible(false);
 		knifeSlashAnimation.setVisible(false);
+		healthBar.setVisible(false);
+		damageLabel.setVisible(false);
 		
 		if (counter == 0) {
 			phase1Music.play();
@@ -212,6 +249,7 @@ public class BattleScene implements Scene {
 			}
 		}
 		else knifeSlashAnimation.resetFrameCount();
+		healthBar.processLogic();
 		
 		stage.act();
 		

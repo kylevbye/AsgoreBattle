@@ -2,8 +2,10 @@ package games.byekv1.asgorebattle.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import games.byekv1.graphics.BattleGUI;
+import games.byekv1.graphics.HealthBar;
 import games.byekv1.input.PlayerInput;
 import games.byekv1.output.VolumeManager;
 
@@ -23,6 +25,8 @@ public class BattleController {
     ///
     public Sound knifeSwing;
     public Sound asgoreDamage;
+    public HealthBar healthBar;
+    private Label damageLabel;
 
     ///
     /// Getters
@@ -42,6 +46,8 @@ public class BattleController {
     public void setInternalTimeRecord(long timeMS) { internalTimeRecord = timeMS; }
     public void setKnifeSwing(Sound knifeSwing) { this.knifeSwing = knifeSwing; }
     public void setAsgoreDamage(Sound asgoreDamage) { this.asgoreDamage = asgoreDamage; }
+    public void setHealthBar(HealthBar healthBar) { this.healthBar = healthBar; }
+    public void setDamageLabel(Label damageLabel) { this.damageLabel = damageLabel; }
 
     ///
     /// Functions
@@ -89,7 +95,12 @@ public class BattleController {
                 setInternalTimeRecord(0);
                 break;
             case BattleControllerConstants.PLAYER_TURN_FIGHT_2:
-                if (internalTimeRecord == 0) setInternalTimeRecord(System.currentTimeMillis());
+                healthBar.setVisible(true);
+                damageLabel.setVisible(true);
+                if (internalTimeRecord == 0) {
+                    setInternalTimeRecord(System.currentTimeMillis());
+                    healthBar.setHealthPoints(healthBar.getHealthPoints()-10); 
+                }
                 else if (System.currentTimeMillis()-internalTimeRecord>2000) {
                     setTurn(BattleControllerConstants.PLAYER_TURN);
                     setSelection(BattleControllerConstants.FIGHT);

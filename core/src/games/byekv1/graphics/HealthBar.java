@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import games.byekv1.graphics.graphicloaders.ImageLoader;
+
 public class HealthBar extends Actor {
 
     ///
@@ -48,7 +50,7 @@ public class HealthBar extends Actor {
 
     public void processLogic() {
 
-        if (counter%displayDelay == 0 && displayPoints>healthPoints) {
+        if (counter%displayDelay == 0 && displayPoints>healthPoints && displayPoints > 0) {
             --displayPoints;
             healthDisplayChanged();
         }
@@ -82,16 +84,16 @@ public class HealthBar extends Actor {
 	@Override
 	protected void sizeChanged() {
 		
-		topRectangle.setSize(getWidth(), getHeight());
-		bottomRectangle.setSize(getWidth(), getHeight());
+		//topRectangle.setSize(getWidth(), getHeight());
+		//bottomRectangle.setSize(getWidth(), getHeight());
 		
 	}
 	
 	@Override 
 	protected void scaleChanged() {
 		
-		topRectangle.setScale(getScaleX(), getScaleY());
-		bottomRectangle.setScale(getScaleX(), getScaleY());
+		//topRectangle.setScale(getScaleX(), getScaleY());
+		//bottomRectangle.setScale(getScaleX(), getScaleY());
 		
 	}
 	
@@ -126,19 +128,29 @@ public class HealthBar extends Actor {
     public HealthBar(float xIn, float yIn, float scaleXIn, float scaleYIn, float width, 
     float height, Color topColor, Color bottomColor) {
         super();
+
+        
+
+        /// Create Top
+        Image topRectangle = ImageLoader.loadImage("rect.png");
+        topRectangle.setBounds(xIn, yIn, width, height);
+        topRectangle.setScale(scaleXIn, scaleYIn);
+        topRectangle.setColor(topColor);
+        settopRectangle(topRectangle);
+
+        /// Create Bottom
+        Image bottomRectangle = ImageLoader.loadImage("rect.png");
+        bottomRectangle.setBounds(xIn, yIn, width, height);
+        bottomRectangle.setScale(scaleXIn, scaleYIn);
+        bottomRectangle.setColor(bottomColor);
+        setbottomRectangle(bottomRectangle);
+
         setWidth(width); setHeight(height);
         setOrigin(0.f, 0.f);
 		setX(xIn); setY(yIn);
 		setScale(scaleXIn, scaleYIn);
 		setRotation(0.f);
 
-        /// Create Top
-        Image topRectangle;
-        settopRectangle(topRectangle);
-
-        /// Create Bottom
-        Image bottomRectangle;
-        setbottomRectangle(bottomRectangle);
     }
 
 }
