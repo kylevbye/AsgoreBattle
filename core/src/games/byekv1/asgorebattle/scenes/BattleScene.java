@@ -131,6 +131,9 @@ public class BattleScene implements Scene {
 		//	Battle GUI
 		setBattleGUI(new BattleGUI());
 		battleController.setBattleGUI(battleGUI);
+		battleGUI.getActOption().setVisible(false);
+		battleGUI.getMercyOption().setVisible(false);
+		battleGUI.setScaling(true);
 		
 		//	Asgore Idle Animation
 		setAsgoreIdleAnimation(
@@ -198,7 +201,7 @@ public class BattleScene implements Scene {
 				WORLD_WIDTH/2-asgoreIdleAnimation.getWidth()*asgoreIdleAnimation.getScaleX()/2 + 52.5f*asgoreIdleAnimation.getScaleX(), 
 				WORLD_HEIGHT/2
 			);
-		knifeSlashAnimation.setPosition(WORLD_WIDTH/2-knifeSlashAnimation.getWidth()*knifeSlashAnimation.getScaleX()/2, (WORLD_HEIGHT/2)+knifeSlashAnimation.getHeight()*knifeSlashAnimation.getScaleY()*3);
+		knifeSlashAnimation.setPosition(WORLD_WIDTH/2-knifeSlashAnimation.getWidth()*knifeSlashAnimation.getScaleX()/2, (WORLD_HEIGHT/2)+knifeSlashAnimation.getHeight()*knifeSlashAnimation.getScaleY()*7);
 
 		//	HealthBar
 		healthBar.setPosition(WORLD_WIDTH/2-healthBar.getWidth()/2, (10.f/16.f)*(WORLD_HEIGHT));
@@ -210,7 +213,7 @@ public class BattleScene implements Scene {
 
 		//	Label
 		damageLabel.setVisible(false);
-		damageLabel.setPosition((healthBar.getX()+healthBar.getWidth()/2)-damageLabel.getWidth()/2, healthBar.getY()+(healthBar.getHeight()*8.3f));
+		damageLabel.setPosition((healthBar.getX()+healthBar.getWidth()/2)-damageLabel.getWidth()/2, healthBar.getY()+(healthBar.getHeight()*9.3f));
 
 		battleGUI.setScaling(true);
 

@@ -86,6 +86,7 @@ public class BattleIntroScene implements Scene {
 	private BattleGUI battleGUI;
 	private PNGAnimatedMobileScreenObject asgoreIntroAnimation;
 	private PNGAnimatedMobileScreenObject actShatterAnimation;
+	private Image asgoreReady;
 	private DialogLabel dLabel1;
 	
 	///
@@ -105,6 +106,7 @@ public class BattleIntroScene implements Scene {
 	public BattleGUI getBattleGUI() { return battleGUI; }
 	public PNGAnimatedMobileScreenObject getAsgoreIntroAnimation() { return asgoreIntroAnimation; }
 	public PNGAnimatedMobileScreenObject getActShatterAnimation() { return actShatterAnimation; }
+	public Image getAsgoreReady() { return asgoreReady; }
 	public DialogLabel getDLabel1() { return dLabel1; }
 	
 	///
@@ -128,6 +130,7 @@ public class BattleIntroScene implements Scene {
 	public void setActShatterAnimation(PNGAnimatedMobileScreenObject actShatterAnimation) {
 		this.actShatterAnimation = actShatterAnimation;
 	}
+	public void setAsgoreReady(Image asgoreReady) { this.asgoreReady = asgoreReady; }
 	public void setDLabel1(DialogLabel dLabel1) { this.dLabel1 = dLabel1; }
 	
 	///
@@ -179,7 +182,6 @@ public class BattleIntroScene implements Scene {
 		
 		PNGAnimatedMobileScreenObject asgoreIntroAnim = PNGAnimatedMSOLoader.loadPNGAnimatedMobileScreenObject("asgoreIntro/", "asgoreIntro", 5);
 		asgoreIntroAnim.setFrameDelay(10);
-		asgoreIntroAnim.setScale(1.5f);
 		setAsgoreIntroAnimation(asgoreIntroAnim);
 		stage.addActor(asgoreIntroAnim);
 		
@@ -191,7 +193,10 @@ public class BattleIntroScene implements Scene {
 		DialogLabel lab1 = new DialogLabel("", null, 7);
 		setDLabel1(lab1);
 		stage.addActor(lab1);
-		
+
+		Image asgoreReady = ImageLoader.loadImage("asgore/asgoreReady.png");
+		setAsgoreReady(asgoreReady);
+		stage.addActor(asgoreReady);
 		
 		
 		//	Final Stage Apply
@@ -203,15 +208,18 @@ public class BattleIntroScene implements Scene {
 	public void setup() {
 		
 		//	Scale/Resize
-		idleAsgore.setScale(1.5f);
-		asgoreSilhouette.setScale(1.5f);
+		float asgoreScale = 1.85f;
+		idleAsgore.setScale(asgoreScale);
+		asgoreSilhouette.setScale(asgoreScale);
 		asgoreSpear.setOrigin(asgoreSpear.getWidth()/2, asgoreSpear.getHeight()/2);
 		asgoreSpear.setRotation(-90f);
 		asgoreSpear.setScale(1.3f);
+		asgoreIntroAnimation.setScale(asgoreScale);
 		battleGUI.setSize(WORLD_WIDTH-WORLD_WIDTH/6, WORLD_HEIGHT/3);
 		battleGUI.setScaling(false);
 		battleGUI.getMercyOption().setVisible(false);
 		actShatterAnimation.setScale(battleGUI.getActOption().getScaleX(), battleGUI.getActOption().getScaleY());
+		asgoreReady.setScale(.9f);
 		
 		//	Hide all
 		idleAsgore.setVisible(false);
@@ -220,6 +228,7 @@ public class BattleIntroScene implements Scene {
 		asgoreSilhouette.setVisible(false);
 		asgoreSpear.setVisible(false);
 		actShatterAnimation.setVisible(false);
+		asgoreReady.setVisible(false);
 		
 		setCounter(0);
 		
@@ -232,6 +241,10 @@ public class BattleIntroScene implements Scene {
 				WORLD_WIDTH/2 - asgoreIntroAnimation.getWidth()*asgoreIntroAnimation.getScaleX()/2, WORLD_HEIGHT/2
 				);
 		dLabel1.setPosition(0, 0);
+		asgoreReady.setPosition(
+				WORLD_WIDTH/2-asgoreReady.getWidth()*asgoreReady.getScaleX()/2 + 52.5f*asgoreReady.getScaleX(), 
+				WORLD_HEIGHT/2
+			);
 		
 	}
 
@@ -244,6 +257,7 @@ public class BattleIntroScene implements Scene {
 		asgoreIntroAnimation.setVisible(false);
 		dLabel1.setVisible(false);
 		asgoreSpear.setVisible(false);
+		asgoreReady.setVisible(false);
 		
 		introMusic.setVolume(VolumeManager.volume);
 		
@@ -289,6 +303,8 @@ public class BattleIntroScene implements Scene {
 			
 			if (counter < CounterConstants.ASGORE_SILO + 100) {
 				asgoreSpear.moveBy(0, 2);
+				//asgoreSpear.setX(asgoreSilhouette.getX()+asgoreSilhouette.getScaleX()//*asgoreSilhouette.getWidth()*.5f
+				//);
 			}
 			else asgoreSpear.moveBy(0, -7);
 			
@@ -303,9 +319,11 @@ public class BattleIntroScene implements Scene {
 			}
 			if (counter == 3245) breakSound2.play(VolumeManager.volume*1.6f);
 			
-			if ((int)asgoreSilhouette.findCenterX() != (int)(WORLD_WIDTH * .328f)) {
-				asgoreSpear.moveBy(-1f, 0);
+			//.328
+			if ((int)asgoreSilhouette.findCenterX() != (int)(WORLD_WIDTH * .275f)) {
+				//asgoreSpear.moveBy(-1f, 0);
 				asgoreSilhouette.moveBy(-1f, 0);
+				asgoreSpear.setX(asgoreSilhouette.findCenterX()-asgoreSpear.getWidth()*(.199f));
 			}
 			
 		}
@@ -321,6 +339,12 @@ public class BattleIntroScene implements Scene {
 		
 		if (counter == CounterConstants.STARTFIGHT) {
 			SceneManager.loadScene(SceneManager.SceneConstants.BATTLE);
+		}
+
+		if (counter >= 3242 && actShatterAnimation.isOver()) {
+			battleGUI.setScaling(true);
+			asgoreReady.setVisible(true);
+			idleAsgore.setVisible(false);
 		}
 		
 		
