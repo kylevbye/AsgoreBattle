@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import games.byekv1.asgorebattle.controllers.BattleController;
 import games.byekv1.graphics.BattleGUI;
+import games.byekv1.graphics.HollowBox;
 import games.byekv1.graphics.HealthBar;
 import games.byekv1.graphics.PNGAnimatedMobileScreenObject;
 import games.byekv1.graphics.graphicloaders.PNGAnimatedMSOLoader;
@@ -30,8 +31,11 @@ import games.byekv1.output.VolumeManager;
  */
 public class BattleScene implements Scene {
 	
+	///	Constants
 	public static int WORLD_WIDTH = 640;
 	public static int WORLD_HEIGHT = 480;
+	public static int D_DEFAULT_W = 534; 
+	public static int D_DEFAULT_H = 128;
 
 
 	///
@@ -77,8 +81,11 @@ public class BattleScene implements Scene {
 	private PNGAnimatedMobileScreenObject asgoreIdleAnimation;
 	private PNGAnimatedMobileScreenObject knifeSlashAnimation;
 	private Label damageLabel;
+	private Label nameLabel;
+	private Label levelLabel;
 	private HealthBar healthBar;
 	private Music phase1Music;
+	private HollowBox hollowBox;
 
 	///
 	///	Getters
@@ -106,8 +113,12 @@ public class BattleScene implements Scene {
 	private void setKnifeSlashAnimation(PNGAnimatedMobileScreenObject knifeSlashAnimation) {
 		this.knifeSlashAnimation = knifeSlashAnimation;
 	}
+	public void setDamageLabel(Label damageLabel) { this.damageLabel = damageLabel; }
+	public void setNameLabel(Label nameLabel) { this.nameLabel = nameLabel; }
+	public void setLevelLabel(Label levelLabel) { this.levelLabel = levelLabel; }
 	private void setHealthBar(HealthBar healthBar) { this.healthBar = healthBar; }
 	public void setPhase1Music(Music phase1Music) { this.phase1Music = phase1Music; }
+	public void setHollowBox(HollowBox hollowBox) { this.hollowBox = hollowBox; }
 	
 	///
 	///	Scene Functions
@@ -148,18 +159,37 @@ public class BattleScene implements Scene {
 		);
 
 		//	damageLabel
-		damageLabel = new Label("9999999", new LabelStyle(
+		setDamageLabel(new Label("9999999", new LabelStyle(
 			new BitmapFont(
 				Gdx.files.internal("fonts/undertaleDamage.fnt")
 				), Color.RED)
-			);
+			));
 		battleController.setDamageLabel(damageLabel);
+
+		//	nameLabel
+		setNameLabel(new Label("Chara  Lvl 20", new LabelStyle(
+			new BitmapFont(
+				Gdx.files.internal("fonts/names.fnt")
+				), Color.WHITE)
+			));
+		
+		nameLabel.setFontScale(.8f, .96f);
+
+		//	levelLabel
+		setLevelLabel(new Label("Lvl 20", new LabelStyle(
+			new BitmapFont(
+				Gdx.files.internal("fonts/undertale.fnt")
+				), Color.RED)
+			));
 
 		//	healthBar
 		setHealthBar(
 			new HealthBar(0,0, 1, 1, asgoreIdleAnimation.getWidth()*.7f, WORLD_HEIGHT/30*.8f, Color.GREEN, Color.GRAY)
 		);
 		battleController.setHealthBar(healthBar);
+
+		//	hollowBox
+		setHollowBox(new HollowBox(0, 0, battleGUI.getWidth(), battleGUI.getHeight(), Color.WHITE, 5));
 
 		//	Music
 		setPhase1Music(Gdx.audio.newMusic(Gdx.files.internal("music/asgoreBattle.ogg")));
@@ -171,6 +201,8 @@ public class BattleScene implements Scene {
 		stage.addActor(knifeSlashAnimation);
 		stage.addActor(healthBar);
 		stage.addActor(damageLabel);
+		stage.addActor(nameLabel);
+		stage.addActor(hollowBox);
 
 		//	Final Stage Apply
 		stage.getViewport().apply();
@@ -202,6 +234,7 @@ public class BattleScene implements Scene {
 				WORLD_HEIGHT/2
 			);
 		knifeSlashAnimation.setPosition(WORLD_WIDTH/2-knifeSlashAnimation.getWidth()*knifeSlashAnimation.getScaleX()/2, (WORLD_HEIGHT/2)+knifeSlashAnimation.getHeight()*knifeSlashAnimation.getScaleY()*7);
+		hollowBox.setBounds(battleGUI.getX(), battleGUI.getY()+battleGUI.getHeight()*.6f, D_DEFAULT_W, D_DEFAULT_H);
 
 		//	HealthBar
 		healthBar.setPosition(WORLD_WIDTH/2-healthBar.getWidth()/2, (10.f/16.f)*(WORLD_HEIGHT));
@@ -211,9 +244,15 @@ public class BattleScene implements Scene {
 		healthBar.setdisplayPoints(200);
 		healthBar.setVisible(false);
 
-		//	Label
+		//	damagelabel
 		damageLabel.setVisible(false);
 		damageLabel.setPosition((healthBar.getX()+healthBar.getWidth()/2)-damageLabel.getWidth()/2, healthBar.getY()+(healthBar.getHeight()*9.3f));
+
+		//	nameLabel
+		nameLabel.setVisible(false);
+		nameLabel.setPosition(battleGUI.getX(), battleGUI.getY()+battleGUI.getHeight()*.38f);
+
+		//	levelLabel
 
 		battleGUI.setScaling(true);
 
@@ -232,6 +271,8 @@ public class BattleScene implements Scene {
 		knifeSlashAnimation.setVisible(false);
 		healthBar.setVisible(false);
 		damageLabel.setVisible(false);
+
+		nameLabel.setVisible(true);
 		
 		if (counter == 0) {
 			phase1Music.play();
