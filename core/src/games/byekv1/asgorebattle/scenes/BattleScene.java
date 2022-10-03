@@ -82,8 +82,10 @@ public class BattleScene implements Scene {
 	private PNGAnimatedMobileScreenObject knifeSlashAnimation;
 	private Label damageLabel;
 	private Label nameLabel;
-	private Label levelLabel;
-	private HealthBar healthBar;
+	private Label hpLabel;
+	private Label hpNumberLabel;
+	private HealthBar asgoreHealthBar;
+	private HealthBar playerHealthBar;
 	private Music phase1Music;
 	private HollowBox hollowBox;
 
@@ -115,8 +117,10 @@ public class BattleScene implements Scene {
 	}
 	public void setDamageLabel(Label damageLabel) { this.damageLabel = damageLabel; }
 	public void setNameLabel(Label nameLabel) { this.nameLabel = nameLabel; }
-	public void setLevelLabel(Label levelLabel) { this.levelLabel = levelLabel; }
-	private void setHealthBar(HealthBar healthBar) { this.healthBar = healthBar; }
+	public void setHPLabel(Label hpLabel) { this.hpLabel = hpLabel; }
+	public void setHPNumberLabel(Label hpNumberLabel) { this.hpNumberLabel = hpNumberLabel; }
+	private void setAsgoreHealthBar(HealthBar asgoreHealthBar) { this.asgoreHealthBar = asgoreHealthBar; }
+	private void setPlayerHealthBar(HealthBar playerHealthBar) { this.playerHealthBar = playerHealthBar; }
 	public void setPhase1Music(Music phase1Music) { this.phase1Music = phase1Music; }
 	public void setHollowBox(HollowBox hollowBox) { this.hollowBox = hollowBox; }
 	
@@ -167,26 +171,41 @@ public class BattleScene implements Scene {
 		battleController.setDamageLabel(damageLabel);
 
 		//	nameLabel
-		setNameLabel(new Label("Chara  Lvl 20", new LabelStyle(
+		setNameLabel(new Label("Chara  Lv 20", new LabelStyle(
 			new BitmapFont(
 				Gdx.files.internal("fonts/names.fnt")
 				), Color.WHITE)
 			));
 		
-		nameLabel.setFontScale(.8f, .96f);
+		nameLabel.setFontScale(.64f, .96f);
 
-		//	levelLabel
-		setLevelLabel(new Label("Lvl 20", new LabelStyle(
+		//	hpLabel
+		setHPLabel(new Label("HP", new LabelStyle(
 			new BitmapFont(
-				Gdx.files.internal("fonts/undertale.fnt")
-				), Color.RED)
+				Gdx.files.internal("fonts/8bit.fnt")
+				), Color.WHITE)
 			));
+		hpLabel.setFontScale(.3f, .3f);
 
-		//	healthBar
-		setHealthBar(
+		//	hpNumberLabel
+		setHPNumberLabel(new Label("XX/99", new LabelStyle(
+			new BitmapFont(
+				Gdx.files.internal("fonts/names.fnt")
+				), Color.WHITE)
+			));
+		hpNumberLabel.setFontScale(.64f, .96f);
+		
+		//	asgoreHealthBar
+		setAsgoreHealthBar(
 			new HealthBar(0,0, 1, 1, asgoreIdleAnimation.getWidth()*.7f, WORLD_HEIGHT/30*.8f, Color.GREEN, Color.GRAY)
 		);
-		battleController.setHealthBar(healthBar);
+		battleController.setAsgoreHealthBar(asgoreHealthBar);
+
+		//	playerHealthBar
+		setPlayerHealthBar(
+			new HealthBar(0, 0, 1, 1, WORLD_WIDTH*.22f, nameLabel.getHeight(), Color.YELLOW, Color.RED)
+		);
+		battleController.setPlayerHealthBar(playerHealthBar);
 
 		//	hollowBox
 		setHollowBox(new HollowBox(0, 0, battleGUI.getWidth(), battleGUI.getHeight(), Color.WHITE, 5));
@@ -199,9 +218,12 @@ public class BattleScene implements Scene {
 		stage.addActor(battleGUI);
 		stage.addActor(asgoreIdleAnimation);
 		stage.addActor(knifeSlashAnimation);
-		stage.addActor(healthBar);
+		stage.addActor(asgoreHealthBar);
+		stage.addActor(playerHealthBar);
 		stage.addActor(damageLabel);
 		stage.addActor(nameLabel);
+		stage.addActor(hpLabel);
+		stage.addActor(hpNumberLabel);
 		stage.addActor(hollowBox);
 
 		//	Final Stage Apply
@@ -236,23 +258,38 @@ public class BattleScene implements Scene {
 		knifeSlashAnimation.setPosition(WORLD_WIDTH/2-knifeSlashAnimation.getWidth()*knifeSlashAnimation.getScaleX()/2, (WORLD_HEIGHT/2)+knifeSlashAnimation.getHeight()*knifeSlashAnimation.getScaleY()*7);
 		hollowBox.setBounds(battleGUI.getX(), battleGUI.getY()+battleGUI.getHeight()*.6f, D_DEFAULT_W, D_DEFAULT_H);
 
-		//	HealthBar
-		healthBar.setPosition(WORLD_WIDTH/2-healthBar.getWidth()/2, (10.f/16.f)*(WORLD_HEIGHT));
-		healthBar.setMaxHealthPoints(200);
-		healthBar.setHealthPoints(200);
-		healthBar.setdisplayDelay(1);
-		healthBar.setdisplayPoints(200);
-		healthBar.setVisible(false);
+		//	asgoreHealthBar
+		asgoreHealthBar.setPosition(WORLD_WIDTH/2-asgoreHealthBar.getWidth()/2, (10.f/16.f)*(WORLD_HEIGHT));
+		asgoreHealthBar.setMaxHealthPoints(200);
+		asgoreHealthBar.setHealthPoints(200);
+		asgoreHealthBar.setdisplayDelay(1);
+		asgoreHealthBar.setdisplayPoints(200);
+		asgoreHealthBar.setVisible(false);
 
 		//	damagelabel
 		damageLabel.setVisible(false);
-		damageLabel.setPosition((healthBar.getX()+healthBar.getWidth()/2)-damageLabel.getWidth()/2, healthBar.getY()+(healthBar.getHeight()*9.3f));
+		damageLabel.setPosition((asgoreHealthBar.getX()+asgoreHealthBar.getWidth()/2)-damageLabel.getWidth()/2, asgoreHealthBar.getY()+(asgoreHealthBar.getHeight()*9.3f));
 
 		//	nameLabel
 		nameLabel.setVisible(false);
 		nameLabel.setPosition(battleGUI.getX(), battleGUI.getY()+battleGUI.getHeight()*.38f);
 
-		//	levelLabel
+		//	playerHealthBar
+		playerHealthBar.setPosition((WORLD_WIDTH-playerHealthBar.getWidth())*.5f, nameLabel.getY());
+		playerHealthBar.setMaxHealthPoints(99);
+		playerHealthBar.setHealthPoints(99);
+		playerHealthBar.setdisplayDelay(0);
+		playerHealthBar.setdisplayPoints(99);
+		playerHealthBar.setVisible(false);
+		System.out.println(playerHealthBar.getWidth());
+
+		//	hpLabel
+		hpLabel.setVisible(false);
+		hpLabel.setPosition(playerHealthBar.getX()-hpLabel.getWidth()*.39f, playerHealthBar.getY()-3f);
+
+		//	hpNumberLabel
+		hpNumberLabel.setVisible(false);
+		hpNumberLabel.setPosition(playerHealthBar.getX()+playerHealthBar.getWidth()*1.23f, playerHealthBar.getY());
 
 		battleGUI.setScaling(true);
 
@@ -269,10 +306,13 @@ public class BattleScene implements Scene {
 		battleGUI.setVisible(false);
 		asgoreIdleAnimation.setVisible(false);
 		knifeSlashAnimation.setVisible(false);
-		healthBar.setVisible(false);
+		asgoreHealthBar.setVisible(false);
 		damageLabel.setVisible(false);
 
 		nameLabel.setVisible(true);
+		hpLabel.setVisible(true);
+		playerHealthBar.setVisible(true);
+		hpNumberLabel.setVisible(true);
 		
 		if (counter == 0) {
 			phase1Music.play();
@@ -293,7 +333,15 @@ public class BattleScene implements Scene {
 			}
 		}
 		else knifeSlashAnimation.resetFrameCount();
-		healthBar.processLogic();
+		asgoreHealthBar.processLogic();
+		if(counter%10==0)playerHealthBar.setHealthPoints(playerHealthBar.getHealthPoints()-1);
+		playerHealthBar.processLogic();
+
+		hpNumberLabel.setText(String.format("%02d / 99", playerHealthBar.getdisplayPoints()));
+
+		if (playerHealthBar.getHealthPoints() == 0) {
+			System.exit(0);
+		}
 		
 		stage.act();
 		

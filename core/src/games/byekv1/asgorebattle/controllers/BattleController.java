@@ -25,7 +25,8 @@ public class BattleController {
     ///
     public Sound knifeSwing;
     public Sound asgoreDamage;
-    public HealthBar healthBar;
+    public HealthBar asgoreHealthBar;
+    public HealthBar playerHealthBar;
     private Label damageLabel;
 
     ///
@@ -46,7 +47,8 @@ public class BattleController {
     public void setInternalTimeRecord(long timeMS) { internalTimeRecord = timeMS; }
     public void setKnifeSwing(Sound knifeSwing) { this.knifeSwing = knifeSwing; }
     public void setAsgoreDamage(Sound asgoreDamage) { this.asgoreDamage = asgoreDamage; }
-    public void setHealthBar(HealthBar healthBar) { this.healthBar = healthBar; }
+    public void setAsgoreHealthBar(HealthBar asgoreHealthBar) { this.asgoreHealthBar = asgoreHealthBar; }
+    public void setPlayerHealthBar(HealthBar playerHealthBar) { this.playerHealthBar = playerHealthBar; }
     public void setDamageLabel(Label damageLabel) { this.damageLabel = damageLabel; }
 
     ///
@@ -95,11 +97,11 @@ public class BattleController {
                 setInternalTimeRecord(0);
                 break;
             case BattleControllerConstants.PLAYER_TURN_FIGHT_2:
-                healthBar.setVisible(true);
+                asgoreHealthBar.setVisible(true);
                 damageLabel.setVisible(true);
                 if (internalTimeRecord == 0) {
                     setInternalTimeRecord(System.currentTimeMillis());
-                    healthBar.setHealthPoints(healthBar.getHealthPoints()-10); 
+                    asgoreHealthBar.setHealthPoints(asgoreHealthBar.getHealthPoints()-10); 
                 }
                 else if (System.currentTimeMillis()-internalTimeRecord>2000) {
                     setTurn(BattleControllerConstants.PLAYER_TURN);

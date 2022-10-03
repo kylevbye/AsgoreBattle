@@ -50,10 +50,13 @@ public class HealthBar extends Actor {
 
     public void processLogic() {
 
-        if (counter%displayDelay == 0 && displayPoints>healthPoints && displayPoints > 0) {
-            --displayPoints;
-            healthDisplayChanged();
+        if (displayDelay == 0) {
+            displayPoints = healthPoints;
         }
+        else if (counter%displayDelay == 0 && displayPoints>healthPoints && displayPoints > 0) {
+            --displayPoints;
+        }
+        healthDisplayChanged();
 
         ++counter;
     }
