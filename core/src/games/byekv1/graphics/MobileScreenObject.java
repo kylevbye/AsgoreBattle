@@ -32,7 +32,7 @@ public class MobileScreenObject extends ScreenObject {
 	///
 	
 	public float getSpeed() { return velocityVector.len(); }
-	public float getMotionAngle() { return velocityVector.angle(); }
+	public float getMotionAngle() { return velocityVector.angleDeg(); }
 	
 	
 	///
@@ -56,7 +56,7 @@ public class MobileScreenObject extends ScreenObject {
         
     }
 	
-	public void setMotionAngle(float angleIn) { velocityVector.setAngle(angleIn); }
+	public void setMotionAngle(float angleInDeg) { velocityVector.setAngleDeg(angleInDeg); }
 	
 	///
 	///	Functions
@@ -118,10 +118,10 @@ public class MobileScreenObject extends ScreenObject {
 	 * @param	angleIn	direction to rebound
 	 * @param	elasticityIn	collision imperfection value
 	 */
-	public void rebound(float angleIn, float elasticityIn) {
+	public void rebound(float angleInDeg, float elasticityIn) {
 		
 		accelerationVector.add(
-	            new Vector2((int)(getSpeed()*elasticityIn*acceleration),0).setAngle(angleIn)
+	            new Vector2((int)(getSpeed()*elasticityIn*acceleration),0).setAngleDeg(angleInDeg)
 	            );
 		
 	}
@@ -155,10 +155,10 @@ public class MobileScreenObject extends ScreenObject {
 		
 	}
 	
-	public void accelerateAtAngle(float angleIn) {
+	public void accelerateAtAngle(float angleInDeg) {
 		
         accelerationVector.add(new 
-            Vector2(acceleration, 0).setAngle(angleIn)
+            Vector2(acceleration, 0).setAngleDeg(angleInDeg)
             );
         
     }

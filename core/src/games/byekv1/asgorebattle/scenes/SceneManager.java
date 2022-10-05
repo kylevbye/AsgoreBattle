@@ -35,6 +35,7 @@ public class SceneManager {
 	private static BattleStartScene battleStartScene;
 	private static BattleIntroScene battleIntroScene;
 	private static BattleScene battleScene;
+	private static GameOverScene gameOverScene;
 	
 	///
 	///	Getters
@@ -45,6 +46,7 @@ public class SceneManager {
 	public static BattleStartScene getBattleStartScene() { return battleStartScene; }
 	public static BattleIntroScene getBattleIntroScene() { return battleIntroScene; }
 	public static BattleScene getBattleScene() { return battleScene; }
+	public static GameOverScene getGameOverScene() { return gameOverScene; }
 	
 	///
 	///	Setters
@@ -55,12 +57,15 @@ public class SceneManager {
 	public static void setBattleStartScene(BattleStartScene battleStartScene) { SceneManager.battleStartScene = battleStartScene; }
 	public static void setBattleIntroScene(BattleIntroScene battleIntroScene) { SceneManager.battleIntroScene = battleIntroScene; }
 	public static void setBattleScene(BattleScene battleScene) { SceneManager.battleScene = battleScene; }
+	public static void setGameOverScene(GameOverScene gameOverScene) { SceneManager.gameOverScene = gameOverScene; }
 	
 	///
 	///	Functions
 	///
 	
 	public static void loadScene(int sceneconstant) {
+
+		currentScene.stop();
 		
 		switch (sceneconstant) {
 		
@@ -83,6 +88,11 @@ public class SceneManager {
 			battleScene.setup();
 			currentScene = battleScene;
 			break;
+
+		case SceneConstants.GAMEOVER:
+			gameOverScene.setup();
+			currentScene = gameOverScene;
+			break;
 			
 		}
 		
@@ -95,6 +105,7 @@ public class SceneManager {
 		setBattleStartScene(new BattleStartScene());
 		setBattleIntroScene(new BattleIntroScene());
 		setBattleScene(new BattleScene());
+		setGameOverScene(new GameOverScene());
 		
 	}
 	
@@ -109,6 +120,7 @@ public class SceneManager {
 		battleStartScene.resize(width, height);
 		battleIntroScene.resize(width, height);
 		battleScene.resize(width, height);
+		gameOverScene.resize(width, height);
 	}
 	
 	///
@@ -125,6 +137,8 @@ public class SceneManager {
 		titlescreenScene.dispose();
 		battleStartScene.dispose();
 		battleIntroScene.dispose();
+		battleScene.dispose();
+		gameOverScene.dispose();
 	}
 
 }
