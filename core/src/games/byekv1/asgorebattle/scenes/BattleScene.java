@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import games.byekv1.asgorebattle.controllers.BattleController;
 import games.byekv1.graphics.ActorComparator;
+import games.byekv1.graphics.AsgoreAttackFactory;
 import games.byekv1.graphics.BattleGUI;
 import games.byekv1.graphics.HollowBox;
 import games.byekv1.graphics.Image;
@@ -42,8 +44,9 @@ public class BattleScene implements Scene {
 	///	Constants
 	public static int WORLD_WIDTH = 640;
 	public static int WORLD_HEIGHT = 480;
-	public static int D_DEFAULT_W = 534; 
-	public static int D_DEFAULT_H = 128;
+	public static int D_DEFAULT_W = 535; 
+	public static int D_DEFAULT_H = 125;
+	public static int BOX_RATE = 5;
 
 
 	///
@@ -98,6 +101,7 @@ public class BattleScene implements Scene {
 	private Music phase1Music;
 	private Music asgoreTheme;
 	private Music skeletalSmash;
+	private Sound damageSound;
 	private HollowBox hollowBox;
 	private ArrayList<Rectangle> rectangleBackground;
 	private ArrayList<MobileScreenObject> souls;
@@ -223,10 +227,12 @@ public class BattleScene implements Scene {
 			new HealthBar(0, 0, 1, 1, WORLD_WIDTH*.22f, nameLabel.getHeight(), Color.YELLOW, Color.RED)
 		);
 		battleController.setPlayerHealthBar(playerHealthBar);
+		AsgoreAttackFactory.healthBar = playerHealthBar;
 
 		//	hollowBox
 		setHollowBox(new HollowBox(0, 0, battleGUI.getWidth(), battleGUI.getHeight(), Color.WHITE, 5));
 		hollowBox.setHollow(false);
+		AsgoreAttackFactory.hollowBox = hollowBox;
 
 		//	battleBackground
 		rectangleBackground = new ArrayList<Rectangle>();
@@ -271,6 +277,10 @@ public class BattleScene implements Scene {
 			souls.add(soul);
 
 		}
+
+		//	Sounds
+		damageSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hurt.mp3"));
+		AsgoreAttackFactory.damage = damageSound;
 
 		//	Music
 		setAsgoreTheme(Gdx.audio.newMusic(Gdx.files.internal("music/asgoreBattle.ogg")));
@@ -492,13 +502,28 @@ public class BattleScene implements Scene {
 			}
 		}
 		else knifeSlashAnimation.resetFrameCount();
+
+		if (battleController.getTurn() == BattleController.BattleControllerConstants.ASGORE_TURN) {
+			if (asgoreIdleAnimation.getColor().a > .2f) {
+				asgoreIdleAnimation.getColor().a -= .01f;
+				for (Image soul : souls) soul.getColor().a -= .01f;
+			}
+		}
+		else {
+			if (asgoreIdleAnimation.getColor().a <= 1.f) {
+				asgoreIdleAnimation.getColor().a += .01f;
+				for (Image soul : souls) soul.getColor().a += .01f;
+			}
+			//if (asgoreIdleAnimation.getColor().a > 1.f) asgoreIdleAnimation.getColor().a = 1.f;
+		}
+
 		asgoreHealthBar.processLogic();
 		//if(counter%5==0)playerHealthBar.setHealthPoints(playerHealthBar.getHealthPoints()-1);
 		playerHealthBar.processLogic();
 
 		hpNumberLabel.setText(String.format("%02d / 99", playerHealthBar.getdisplayPoints()));
 
-		if (playerHealthBar.getHealthPoints() == 0 && false) {
+		if (playerHealthBar.getHealthPoints() <= 0) {
 			SceneManager.loadScene(SceneManager.SceneConstants.GAMEOVER);
 		}
 		
@@ -521,6 +546,10 @@ public class BattleScene implements Scene {
 		stage.getViewport().apply();
 		
 		stage.draw();
+
+		if (battleController.getTurn() == BattleController.BattleControllerConstants.ASGORE_TURN) {
+			battleController.currentAsgoreAttack.draw(stage);
+		}
 		
 	}
 

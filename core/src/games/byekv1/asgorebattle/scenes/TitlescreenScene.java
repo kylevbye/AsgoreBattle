@@ -437,7 +437,8 @@ public class TitlescreenScene implements Scene {
 			if (counter == CounterConstants.GameStart.ENDSCENE) {
 				stageChanged();
 				stage = CounterConstants.TITLE;
-				SceneManager.loadScene(SceneManager.SceneConstants.BATTLESTART);
+				//SceneManager.loadScene(SceneManager.SceneConstants.BATTLESTART);
+				SceneManager.loadScene(SceneManager.SceneConstants.BATTLE);
 			}
 			
 			break;

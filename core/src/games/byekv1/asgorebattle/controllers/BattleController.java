@@ -1,11 +1,17 @@
 package games.byekv1.asgorebattle.controllers;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
+import games.byekv1.asgorebattle.scenes.BattleScene;
+import games.byekv1.graphics.AsgoreAttack;
+import games.byekv1.graphics.AsgoreAttackFactory;
 import games.byekv1.graphics.BattleGUI;
 import games.byekv1.graphics.HealthBar;
+import games.byekv1.graphics.HollowBox;
 import games.byekv1.input.PlayerInput;
 import games.byekv1.output.VolumeManager;
 
@@ -19,6 +25,8 @@ public class BattleController {
     private int selection;
     private BattleGUI battleGUI;
     private long internalTimeRecord;
+    private Random random;
+    public AsgoreAttack currentAsgoreAttack;
 
     ///
     /// Assets
@@ -104,12 +112,67 @@ public class BattleController {
                     asgoreHealthBar.setHealthPoints(asgoreHealthBar.getHealthPoints()-10); 
                 }
                 else if (System.currentTimeMillis()-internalTimeRecord>2000) {
-                    setTurn(BattleControllerConstants.PLAYER_TURN);
+                    setTurn(BattleControllerConstants.ASGORE_TURN_SELECT);
+                }
+                break;
+            case BattleControllerConstants.ASGORE_TURN_SELECT:
+                int attackID = random.nextInt(2)+1;
+                currentAsgoreAttack = AsgoreAttackFactory.getAttack(attackID);
+                setTurn(BattleControllerConstants.ASGORE_TURN);
+                break;
+            case BattleControllerConstants.ASGORE_TURN:
+                if (!currentAsgoreAttack.isOver()) currentAsgoreAttack.update();
+                else setTurn(BattleControllerConstants.ASGORE_TURN_OVER);
+                break;
+            case BattleControllerConstants.ASGORE_TURN_OVER:
+                System.out.println("Attack Over");
+                HollowBox hollowBox = AsgoreAttackFactory.hollowBox;
+
+                boolean widthControlled = false;
+                boolean heightControlled= false;
+
+                //  Shrink back to normal
+                if (currentAsgoreAttack.getBoxWidth() > BattleScene.D_DEFAULT_W) {
+                    if (hollowBox.getWidth() >= BattleScene.D_DEFAULT_W+1) {
+                        hollowBox.shrinkCentered(BattleScene.BOX_RATE, 0);
+                    }
+                    else widthControlled = true;
+                }
+                //  Grow back to normal
+                else {
+                    if (hollowBox.getWidth() <= BattleScene.D_DEFAULT_W) {
+                        hollowBox.growCentered(BattleScene.BOX_RATE, 0);
+                    }
+                    else widthControlled = true;
+                }
+
+                //  Shrink back to normal
+                if (currentAsgoreAttack.getBoxHeight() > BattleScene.D_DEFAULT_H) {
+                    if (hollowBox.getHeight() >= BattleScene.D_DEFAULT_H+1) {
+                        hollowBox.shrinkFromBottomY(BattleScene.BOX_RATE);
+                    }
+                    else heightControlled = true;
+                }
+                //  Grow back to normal
+                else {
+                    if (hollowBox.getHeight() <= BattleScene.D_DEFAULT_H) {
+                        hollowBox.growFromBottomY(BattleScene.BOX_RATE);
+                    }
+                    else heightControlled = true;
+                }
+
+                /*
+                if (hollowBox.getWidth() < BattleScene.D_DEFAULT_W) hollowBox.growCentered(3, 0);
+                if (hollowBox.getHeight() < BattleScene.D_DEFAULT_H) hollowBox.growFromBottomY(3);
+                */
+
+                if (widthControlled && heightControlled) {
+                    hollowBox.setBounds(battleGUI.getX(), battleGUI.getY()+battleGUI.getHeight()*.6f, BattleScene.D_DEFAULT_W, BattleScene.D_DEFAULT_H);
+                    setTurn(BattleControllerConstants.FIGHT);
                     setSelection(BattleControllerConstants.FIGHT);
                 }
                 break;
-            case BattleControllerConstants.ASGORE_TURN:
-                break;
+
         }
     }
 
@@ -120,6 +183,7 @@ public class BattleController {
         setInternalTimeRecord(System.currentTimeMillis());
         setKnifeSwing(Gdx.audio.newSound(Gdx.files.internal("sounds/snd_laz.wav")));
         setAsgoreDamage(Gdx.audio.newSound(Gdx.files.internal("sounds/snd_hdmg.ogg")));
+        random = new Random();
     }
 
     ///
@@ -143,7 +207,9 @@ public class BattleController {
         public static final int PLAYER_TURN_FIGHT_1 = 3;
         public static final int PLAYER_TURN_FIGHT_2 = 4;
         public static final int PLAYER_TURN_ITEM = 5;
+        public static final int ASGORE_TURN_SELECT = 8;
         public static final int ASGORE_TURN = 10;
+        public static final int ASGORE_TURN_OVER = 15;
         public static final int GAME_OVER = 50;
 
         //  Selection

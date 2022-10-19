@@ -62,6 +62,39 @@ public class HollowBox extends Actor {
         batch.begin();
     }
 
+    ///
+    /// Provided Functions
+    ///
+
+    public void growFromBottomY(int rate) {
+        //shrinkFromBottomY(-rate);
+        //moveBy(0, rate);
+        setHeight(getHeight()+rate);
+    }
+
+    public void shrinkFromBottomY(int rate) {
+        //moveBy(0, -rate*2);
+        //setHeight(getHeight()-rate*2);
+        growFromBottomY(-rate);
+    } 
+
+    public void shrinkCentered(int rate) {
+        shrinkCentered(rate, rate);
+    }
+
+    public void shrinkCentered(int rateX, int rateY) {
+        moveBy(rateX, rateY);
+        setWidth(getWidth()-rateX*2);
+        setHeight(getHeight()-rateY*2);
+    }
+
+    public void growCentered(int rate) {
+        shrinkCentered(-rate);
+    }
+
+    public void growCentered(int rateX, int rateY) {
+        shrinkCentered(-rateX, -rateY);
+    }
 
     ///
     /// Constructors

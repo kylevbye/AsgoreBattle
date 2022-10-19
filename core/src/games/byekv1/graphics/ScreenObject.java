@@ -4,6 +4,7 @@
 package games.byekv1.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -79,6 +80,10 @@ public class ScreenObject extends Image implements Collidable {
         boundingPolygon.setScale(getScaleX(),getScaleY());
         return boundingPolygon;
     }
+
+	public boolean overlaps(ScreenObject other) {
+		return Intersector.overlapConvexPolygons(getBoundingPolygon(), other.getBoundingPolygon());
+	}
 	
 	
 	///
